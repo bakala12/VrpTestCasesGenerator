@@ -77,10 +77,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Generator\GeneratorParameters.cs" />
+    <Compile Include="Generator\IVrpGenerator.cs" />
+    <Compile Include="Writer\IVrpProblemWriter.cs" />
+    <Compile Include="Model\Location.cs" />
     <Compile Include="Model\DistanceMatrix.cs" />
     <Compile Include="Model\VrpProblem.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Generator\VrpGenerator.cs" />
+    <Compile Include="Writer\VrpProblemWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
