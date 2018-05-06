@@ -69,6 +69,7 @@
       <HintPath>..\packages\System.Runtime.Extensions.4.1.0\lib\net462\System.Runtime.Extensions.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -79,6 +80,8 @@
   <ItemGroup>
     <Compile Include="Generator\GeneratorParameters.cs" />
     <Compile Include="Generator\IVrpGenerator.cs" />
+    <Compile Include="Generator\NominatimClient.cs" />
+    <Compile Include="Model\Address.cs" />
     <Compile Include="Writer\IVrpProblemWriter.cs" />
     <Compile Include="Model\Location.cs" />
     <Compile Include="Model\DistanceMatrix.cs" />
