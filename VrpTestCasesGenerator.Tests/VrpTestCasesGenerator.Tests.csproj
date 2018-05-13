@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DemandGeneratorTests.cs" />
+    <Compile Include="GraphHopperClientTest.cs" />
     <Compile Include="NominatimClientTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
