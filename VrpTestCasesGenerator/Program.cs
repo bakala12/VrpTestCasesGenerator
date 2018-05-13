@@ -54,7 +54,7 @@ namespace VrpTestCasesGenerator
 
         static void Run(Arguments arguments)
         {
-            IVrpGenerator generator = new VrpGenerator(null);
+            IVrpGenerator generator = new VrpGenerator(new DemandGenerator(0.1,1,arguments.Capacity), new DistanceMatrixGenerator());
             IVrpProblemWriter writer = new VrpProblemWriter();
             var output = arguments.OutputPath ?? arguments.ProblemName;
             var param = new GeneratorParameters()
