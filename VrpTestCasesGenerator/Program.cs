@@ -70,12 +70,17 @@ namespace VrpTestCasesGenerator
                     Longitude = arguments.DepotLongitude
                 }
             };
+            var tasks = new List<Task>();
             for (int i = 0; i < arguments.NumberOfInstances; i++)
             {
-                var problem = generator.Generate(param);
-                var outputPath = arguments.NumberOfInstances == 1 ? output + ".vrp" : output + $"{i + 1}.vrp";
-                writer.Write(problem, outputPath);
+                tasks.Add(Task.Run(async () =>
+                {
+                    var problem = await generator.Generate(param);
+                    var outputPath = arguments.NumberOfInstances == 1 ? output + ".vrp" : output + $"{i + 1}.vrp";
+                    await writer.Write(problem, outputPath);
+                }));
             }
+            Task.WaitAll(tasks.ToArray());
         }
 
         static void RunWithDefault()

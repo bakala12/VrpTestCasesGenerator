@@ -9,7 +9,7 @@ namespace VrpTestCasesGenerator.Writer
 {
     public class VrpProblemWriter : IVrpProblemWriter
     {
-        public void Write(VrpProblem problem, string file)
+        public async Task Write(VrpProblem problem, string file)
         {
             
         }

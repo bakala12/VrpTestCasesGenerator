@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using VrpTestCasesGenerator.Model;
 
 namespace VrpTestCasesGenerator.Generator
@@ -14,10 +15,10 @@ namespace VrpTestCasesGenerator.Generator
             _distanceMatrixGenerator = distanceMatrixGenerator;
         }
 
-        public VrpProblem Generate(GeneratorParameters parameters)
+        public async Task<VrpProblem> Generate(GeneratorParameters parameters)
         {
             int[] demands = _demandGenerator.GenerateDemands(parameters.Clients);
-            var matrix = _distanceMatrixGenerator.GenerateDistanceMatrix(parameters);
+            var matrix = await _distanceMatrixGenerator.GenerateDistanceMatrix(parameters);
             return new VrpProblem()
             {
                 Capacity = parameters.Capacity,

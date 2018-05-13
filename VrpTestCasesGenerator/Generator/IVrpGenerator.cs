@@ -1,9 +1,10 @@
-﻿using VrpTestCasesGenerator.Model;
+﻿using System.Threading.Tasks;
+using VrpTestCasesGenerator.Model;
 
 namespace VrpTestCasesGenerator.Generator
 {
     public interface IVrpGenerator
     {
-        VrpProblem Generate(GeneratorParameters parameters);
+        Task<VrpProblem> Generate(GeneratorParameters parameters);
     }
 }

@@ -1,9 +1,10 @@
-﻿using VrpTestCasesGenerator.Model;
+﻿using System.Threading.Tasks;
+using VrpTestCasesGenerator.Model;
 
 namespace VrpTestCasesGenerator.Writer
 {
     public interface IVrpProblemWriter
     {
-        void Write(VrpProblem problem, string file);
+        Task Write(VrpProblem problem, string file);
     }
 }
