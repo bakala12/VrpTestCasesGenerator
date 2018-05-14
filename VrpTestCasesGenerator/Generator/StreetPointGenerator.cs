@@ -27,7 +27,7 @@ namespace VrpTestCasesGenerator.Generator
                 var sample = samples[i - 1];
                 var x = street.Start.Longitude + i * diffX;
                 var y = street.Start.Latitude + i * diffY;
-                points.Add(new Location(x+sample[0], y+sample[1]));
+                points.Add(new Location(y+sample[1], x+sample[0]));
             }
             return points;
         }

@@ -28,7 +28,7 @@ namespace VrpTestCasesGenerator.Generator
         {
             var streets = await GenerateStreets(parameters.Streets);
             var distSum = streets.Sum(s => s.Distance);
-            var pointsPerStreet = streets.Select(s => (int)Math.Round(s.Distance / distSum)).ToArray();
+            var pointsPerStreet = streets.Select(s => (int)Math.Round(parameters.Clients * s.Distance / distSum)).ToArray();
             int diff = pointsPerStreet.Sum(p => p) - parameters.Clients;
             while (diff != 0)
             {
@@ -39,10 +39,10 @@ namespace VrpTestCasesGenerator.Generator
             }
             var locations = new List<Location>();
             int i = 0;
-            double stdDev = distSum / parameters.Clients / 3; //99,7% points are no further than 3 standard deviations from mean.
+            double stdDev = 0.001;
             foreach (var street in streets)
             {
-                locations.AddRange(_streetPointGenerator.GeneratePointsFromStreet(street, i++, stdDev));
+                locations.AddRange(_streetPointGenerator.GeneratePointsFromStreet(street, pointsPerStreet[i++], stdDev));
             }
             return await CreateMatrix(parameters.Depot, locations);
         }
@@ -65,6 +65,8 @@ namespace VrpTestCasesGenerator.Generator
             foreach (var street in streetNames)
             {
                 var points = await _nominatimClient.GetStreetPoints(street);
+                if (!points?.Any() ?? true)
+                    throw new ArgumentException("Invalid street name");
                 var start = points[0];
                 var end = points[points.Count - 1];
                 var dist = await _graphHopperClient.GetDistance(start, end);

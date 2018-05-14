@@ -94,7 +94,9 @@ namespace VrpTestCasesGenerator
                 Capacity = 100,
                 Streets = new List<string>()
                 {
-                    "Noakowskiego"                    
+                    "Noakowskiego",
+                    "Polna",
+                    "Koszykowa"
                 },
                 NumberOfInstances = 1
             };

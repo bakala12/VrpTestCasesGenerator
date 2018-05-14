@@ -72,7 +72,7 @@ namespace VrpTestCasesGenerator.Writer
                     if (k < 10)
                     {
                         builder.Append("\t");
-                        builder.AppendFormat(maxFormat, matrix[i, j]);
+                        builder.AppendFormat(maxFormat, (int)Math.Round(matrix[i, j]));
                         k++;
                     }
                     else
