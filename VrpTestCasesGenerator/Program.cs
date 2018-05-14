@@ -54,7 +54,7 @@ namespace VrpTestCasesGenerator
 
         static void Run(Arguments arguments)
         {
-            IVrpGenerator generator = new VrpGenerator(new DemandGenerator(0.1,1,arguments.Capacity), new DistanceMatrixGenerator());
+            IVrpGenerator generator = new VrpGenerator(new DemandGenerator(0.1,1,arguments.Capacity), new DistanceMatrixGenerator(new StreetPointGenerator()));
             IVrpProblemWriter writer = new VrpProblemWriter();
             var output = arguments.OutputPath ?? arguments.ProblemName;
             var param = new GeneratorParameters()
@@ -70,17 +70,17 @@ namespace VrpTestCasesGenerator
                     Longitude = arguments.DepotLongitude
                 }
             };
-            var tasks = new List<Task>();
+            var tasks = new Task[arguments.NumberOfInstances];
             for (int i = 0; i < arguments.NumberOfInstances; i++)
             {
-                tasks.Add(Task.Run(async () =>
-                {
-                    var problem = await generator.Generate(param);
-                    var outputPath = arguments.NumberOfInstances == 1 ? output + ".vrp" : output + $"{i + 1}.vrp";
-                    await writer.Write(problem, outputPath);
-                }));
+                tasks[i] = Task.Run(async () =>
+                    {
+                        var problem = await generator.Generate(param);
+                        var outputPath = arguments.NumberOfInstances == 1 ? output + ".vrp" : output + $"{i + 1}.vrp";
+                        await writer.Write(problem, outputPath);
+                    });
             }
-            Task.WaitAll(tasks.ToArray());
+            Task.WaitAll(tasks);
         }
 
         static void RunWithDefault()
@@ -94,7 +94,7 @@ namespace VrpTestCasesGenerator
                 Capacity = 100,
                 Streets = new List<string>()
                 {
-                    "Warszawa,Noakowskiego"                    
+                    "Noakowskiego"                    
                 },
                 NumberOfInstances = 1
             };

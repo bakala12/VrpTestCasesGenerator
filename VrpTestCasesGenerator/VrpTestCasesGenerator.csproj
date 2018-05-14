@@ -101,7 +101,9 @@
     <Compile Include="Generator\GraphHopperClient.cs" />
     <Compile Include="Generator\IVrpGenerator.cs" />
     <Compile Include="Generator\NominatimClient.cs" />
+    <Compile Include="Generator\StreetPointGenerator.cs" />
     <Compile Include="Model\Address.cs" />
+    <Compile Include="Model\Street.cs" />
     <Compile Include="Writer\IVrpProblemWriter.cs" />
     <Compile Include="Model\Location.cs" />
     <Compile Include="Model\DistanceMatrix.cs" />
