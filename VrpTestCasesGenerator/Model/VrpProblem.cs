@@ -39,5 +39,9 @@ namespace VrpTestCasesGenerator.Model
         /// Gets or sets distance matrix.
         /// </summary>
         public DistanceMatrix Distances { get; set; }
+        /// <summary>
+        /// Gets or sets node' coordinates.
+        /// </summary>
+        public Location[] Coordinates { get; set; }
     }
 }

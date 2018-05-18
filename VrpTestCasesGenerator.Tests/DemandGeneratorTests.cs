@@ -12,13 +12,13 @@ namespace VrpTestCasesGenerator.Tests
     public class DemandGeneratorTests
     {
         [TestMethod]
-        public void DemeandGenerationTest()
+        public void DemandGenerationTest()
         {
             var gen = new DemandGenerator(0.1, 1, 1000);
             var demands = gen.GenerateDemands(10);
             foreach (var demand in demands)
             {
-                Assert.IsTrue(demand >0 && demand < 1000);
+                Assert.IsTrue(demand > 0 && demand < 1000);
             }
         }
     }

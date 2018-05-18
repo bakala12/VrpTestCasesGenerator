@@ -10,7 +10,12 @@ using VrpTestCasesGenerator.Model;
 
 namespace VrpTestCasesGenerator.Generator
 {
-    public class GraphHopperClient
+    public interface IGraphHopperClient
+    {
+        Task<double> GetDistance(Location from, Location to);
+    }
+
+    public class GraphHopperClient : IGraphHopperClient
     {
         private readonly HttpClient _client = new HttpClient();
 

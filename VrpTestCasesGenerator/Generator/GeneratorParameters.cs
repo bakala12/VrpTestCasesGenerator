@@ -11,5 +11,6 @@ namespace VrpTestCasesGenerator.Generator
         public int Clients { get; set; }
         public Location Depot { get; set; }
         public int Capacity { get; set; }
+        public bool IncludeCoords { get; set; }
     }
 }

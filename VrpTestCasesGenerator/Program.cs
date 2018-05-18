@@ -37,6 +37,9 @@ namespace VrpTestCasesGenerator
 
         [Option("capacity", Default = 100, Required = false, HelpText = "Vehicle capacity")]
         public int Capacity { get; set; }
+
+        [Option("includeCoords", Default = false, Required = false, HelpText = "Output node coordinates")]
+        public bool IncludeCoords { get; set; }
     }
 
     class Program
@@ -54,7 +57,14 @@ namespace VrpTestCasesGenerator
 
         static void Run(Arguments arguments)
         {
-            IVrpGenerator generator = new VrpGenerator(new DemandGenerator(0.1,1,arguments.Capacity), new DistanceMatrixGenerator(new StreetPointGenerator()));
+            IGraphHopperClient graphHopperClient = new GraphHopperClient();
+            INominatimClient nominatimClient = new NominatimClient();
+
+            IVrpGenerator generator = new VrpGenerator(
+                new DemandGenerator(0.1, 1, arguments.Capacity), 
+                new ClientCoordsGenerator(nominatimClient, 0.001), 
+                new DistanceMatrixGenerator(graphHopperClient));
+
             IVrpProblemWriter writer = new VrpProblemWriter();
             var output = arguments.OutputPath ?? arguments.ProblemName;
             var param = new GeneratorParameters()
@@ -68,7 +78,8 @@ namespace VrpTestCasesGenerator
                 {
                     Latitude = arguments.DepotLatitude,
                     Longitude = arguments.DepotLongitude
-                }
+                },
+                IncludeCoords = arguments.IncludeCoords,
             };
             var tasks = new Task[arguments.NumberOfInstances];
             for (int i = 0; i < arguments.NumberOfInstances; i++)
@@ -98,7 +109,8 @@ namespace VrpTestCasesGenerator
                     "Polna",
                     "Koszykowa"
                 },
-                NumberOfInstances = 1
+                NumberOfInstances = 1,
+                IncludeCoords = true
             };
             Run(args);
         }

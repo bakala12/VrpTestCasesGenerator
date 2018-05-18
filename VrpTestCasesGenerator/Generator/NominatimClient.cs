@@ -13,7 +13,13 @@ using VrpTestCasesGenerator.Model;
 
 namespace VrpTestCasesGenerator.Generator
 {
-    public class NominatimClient
+    public interface INominatimClient
+    {
+        Task<List<Location>> GetStreetPoints(string streetName);
+        Task<Address> GetAddress(Location coords);
+    }
+
+    public class NominatimClient : INominatimClient
     {
         private readonly HttpClient _httpClient;
 

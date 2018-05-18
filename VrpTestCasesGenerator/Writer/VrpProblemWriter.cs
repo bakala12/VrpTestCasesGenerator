@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -27,7 +28,15 @@ namespace VrpTestCasesGenerator.Writer
                     sw.WriteLineAsync($"DIMENSION : {problem.Dimension}");
                     sw.WriteLineAsync("EDGE_WEIGHT_TYPE : EXPLICIT");
                     sw.WriteLineAsync("EDGE_WEIGHT_FORMAT: FULL_MATRIX");
-                    sw.WriteLineAsync("DISPLAY_DATA_TYPE: NO_DISPLAY");
+                    if (problem.Coordinates == null)
+                    {
+                        sw.WriteLineAsync("DISPLAY_DATA_TYPE: NO_DISPLAY");
+                    }
+                    else
+                    {
+                        sw.WriteLineAsync("DISPLAY_DATA_TYPE: TWOD_DISPLAY");
+                        WriteCoordinates(sw, problem.Coordinates);
+                    }
                     sw.WriteLineAsync($"CAPACITY : {problem.Capacity}");
                     WriteMatrix(sw, problem.Distances);
                     WriteDemands(sw, problem.Demands);
@@ -89,21 +98,32 @@ namespace VrpTestCasesGenerator.Writer
             }
         }
 
-        private async Task WriteDemands(StreamWriter sw, int[] demands)
+        private void WriteDemands(StreamWriter sw, int[] demands)
         {
-            await sw.WriteLineAsync("DEMAND_SECTION");
-            await sw.WriteLineAsync("1 0");
+            sw.WriteLine("DEMAND_SECTION");
+            sw.WriteLine("1 0");
             for (int i = 0; i < demands.Length; i++)
             {
-                await sw.WriteLineAsync($"{i + 2} {demands[i]}");
+                sw.WriteLine($"{i + 2} {demands[i]}");
             }
         }
 
-        private async Task WriteDepot(StreamWriter sw)
+        private void WriteCoordinates(StreamWriter sw, Location[] coords)
         {
-            await sw.WriteLineAsync($"DEPOT_SECTION");
-            await sw.WriteLineAsync("1");
-            await sw.WriteLineAsync("-1");
+            sw.WriteLine("NODE_COORD_SECTION");
+            for (int i = 0; i < coords.Length; i++)
+            {
+                sw.WriteLine($" {i + 1} " +
+                             $"{coords[i].Latitude.ToString(CultureInfo.InvariantCulture)} " +
+                             $"{coords[i].Longitude.ToString(CultureInfo.InvariantCulture)}");
+            }
+        }
+
+        private void WriteDepot(StreamWriter sw)
+        {
+            sw.WriteLine($"DEPOT_SECTION");
+            sw.WriteLine("1");
+            sw.WriteLine("-1");
         }
     }
 }

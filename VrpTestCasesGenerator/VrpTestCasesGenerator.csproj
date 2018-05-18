@@ -95,13 +95,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Generator\ClientCoordsGenerator.cs" />
     <Compile Include="Generator\DemandGenerator.cs" />
     <Compile Include="Generator\DistanceMatrixGenerator.cs" />
     <Compile Include="Generator\GeneratorParameters.cs" />
     <Compile Include="Generator\GraphHopperClient.cs" />
     <Compile Include="Generator\IVrpGenerator.cs" />
     <Compile Include="Generator\NominatimClient.cs" />
-    <Compile Include="Generator\StreetPointGenerator.cs" />
     <Compile Include="Model\Address.cs" />
     <Compile Include="Model\Street.cs" />
     <Compile Include="Writer\IVrpProblemWriter.cs" />
