@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace VrpTestCasesGenerator.Model
 {
     public struct Location
@@ -13,7 +15,7 @@ namespace VrpTestCasesGenerator.Model
 
         public override string ToString()
         {
-            return $"{Latitude},{Longitude}";
+            return $"{Latitude.ToString(CultureInfo.InvariantCulture)},{Longitude.ToString(CultureInfo.InvariantCulture)}";
         }
     }
 }
