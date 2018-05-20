@@ -49,7 +49,7 @@ namespace VrpTestCasesGenerator.Writer
         private int FindDigits(DistanceMatrix matrix)
         {
             int max = 0;
-            for(int i=0; i<matrix.Dimension; i++)
+            for(int i = 0; i < matrix.Dimension; i++)
             {
                 for (int j = 0; j < matrix.Dimension; j++)
                 {
@@ -73,28 +73,15 @@ namespace VrpTestCasesGenerator.Writer
             int max = FindDigits(matrix);
             var maxFormat = "{0," + max + "}";
             StringBuilder builder = new StringBuilder();
-            int k = 0;
-            for(int i=0; i<matrix.Dimension; i++)
+            for (int i = 0; i < matrix.Dimension; i++)
             {
-                for(int j=0; j<matrix.Dimension; j++)
+                for (int j = 0; j < matrix.Dimension; j++)
                 {
-                    if (k < 10)
-                    {
-                        builder.Append("\t");
-                        builder.AppendFormat(maxFormat, (int)Math.Round(matrix[i, j]));
-                        k++;
-                    }
-                    else
-                    {
-                        sw.WriteLine(builder.ToString());
-                        k = 0;
-                        builder.Clear();
-                    }
+                    builder.Append("\t");
+                    builder.AppendFormat(maxFormat, (int) Math.Round(matrix[i, j]));
                 }
-            }
-            if (k > 0)
-            {
                 sw.WriteLine(builder.ToString());
+                builder.Clear();
             }
         }
 
