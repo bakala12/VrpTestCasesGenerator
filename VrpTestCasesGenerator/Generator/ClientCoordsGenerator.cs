@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Accord.Statistics.Distributions.Multivariate;
+using Accord.Statistics.Distributions.Univariate;
 using VrpTestCasesGenerator.Model;
 
 namespace VrpTestCasesGenerator.Generator
@@ -16,15 +17,16 @@ namespace VrpTestCasesGenerator.Generator
     public class ClientCoordsGenerator : IClientCoordsGenerator
     {
         private readonly INominatimClient _nominatimClient;
-        private MultivariateNormalDistribution _multivariateNormalDistribution;
+        private readonly Independent<UniformContinuousDistribution> _distribution;
+        private const double dist = 0.0005396; //constant that is approximatively 60m in Earth coordinate
 
         public ClientCoordsGenerator(INominatimClient nominatimClient, double standardDeviation)
         {
             _nominatimClient = nominatimClient;
-
             var covarianceMatrix = new double[2, 2];
             covarianceMatrix[0, 0] = covarianceMatrix[1, 1] = standardDeviation * standardDeviation;
-            _multivariateNormalDistribution = new MultivariateNormalDistribution(new double[2], covarianceMatrix);
+            var uniform = new UniformContinuousDistribution(-dist, +dist);
+            _distribution = new Independent<UniformContinuousDistribution>(uniform, uniform);
         }
 
         public async Task<List<Location>> GenerateClientCoords(int clientCount, IEnumerable<string> streetNames)
@@ -63,7 +65,7 @@ namespace VrpTestCasesGenerator.Generator
         private List<Location> GenerateLocationsForStreet(Street street, int count)
         {
             var locations = new List<Location>(count);
-            var samples = _multivariateNormalDistribution.Generate(count);
+            var samples = _distribution.Generate(count);
             
             double step = street.Distance / count;
             double distance = step / 2;
