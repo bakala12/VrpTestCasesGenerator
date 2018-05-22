@@ -100,7 +100,7 @@ namespace VrpTestCasesGenerator.Writer
             sw.WriteLine("NODE_COORD_SECTION");
             for (int i = 0; i < coords.Length; i++)
             {
-                sw.WriteLine($" {i + 1} " +
+                sw.WriteLine($"{i + 1} " +
                              $"{coords[i].Latitude.ToString(CultureInfo.InvariantCulture)} " +
                              $"{coords[i].Longitude.ToString(CultureInfo.InvariantCulture)}");
             }
