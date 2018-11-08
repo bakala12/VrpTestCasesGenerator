@@ -36,6 +36,7 @@ namespace VrpTestCasesGenerator.Generator
 
             foreach (var streetName in streetNames)
             {
+                var streetParts = await _nominatimClient.GetStreetParts(streetName);
                 var streetPoints = await _nominatimClient.GetStreetPoints(streetName);
                 var street = new Street(streetPoints);
                 streets.Add(street);

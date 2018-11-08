@@ -17,6 +17,7 @@ namespace VrpTestCasesGenerator.Generator
     {
         Task<List<Location>> GetStreetPoints(string streetName);
         Task<Address> GetAddress(Location coords);
+        Task<List<List<Location>>> GetStreetParts(string streetName);
     }
 
     public class NominatimClient : INominatimClient
@@ -120,6 +121,66 @@ namespace VrpTestCasesGenerator.Generator
         {
             //TODO throttling (one request per second)
             return await _httpClient.GetAsync(requestUri);
+        }
+
+        public async Task<List<List<Location>>> GetStreetParts(string streetName)
+        {
+            List<List<Location>> list = new List<List<Location>>();
+            var builder = new UriBuilder(@"https://nominatim.openstreetmap.org/search");
+
+            var query = HttpUtility.ParseQueryString(builder.Query);
+            query["format"] = "xml";
+            query["polygon_kml"] = "1";
+            query["city"] = "Warszawa";
+            query["street"] = streetName;
+            query["limit"] = "20";
+            builder.Query = query.ToString();
+
+            var response = await GetAsync(builder.Uri);
+            if (!response.IsSuccessStatusCode)
+                throw new HttpException((int)response.StatusCode, response.ReasonPhrase);
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            XDocument xmlContent;
+            using (var reader = new StringReader(content))
+                xmlContent = XDocument.Load(reader);
+
+            var placeElements = xmlContent
+                .Element("searchresults")
+                .Elements("place")
+                .Where(e =>
+                    e.Attribute("osm_type").Value == "way")
+                .OrderByDescending(f =>
+                    double.Parse(
+                        f.Attribute("importance").Value,
+                        CultureInfo.InvariantCulture));
+            if (!placeElements?.Any() ?? true)
+                return list;
+            var best = double.Parse(placeElements.FirstOrDefault().Attribute("importance").Value);
+            
+            var streetParts = placeElements.Where(x=>Math.Abs(double.Parse(x.Attribute("importance").Value) - best) <= 0.001);
+            
+            foreach (var streetPart in streetParts)
+            {
+                var points = streetPart.Element("geokml")
+                    .Element("LineString")
+                    .Element("coordinates")
+                    .Value;
+                var locations = points.Split(' ').Select(x =>
+                {
+                    var xy = x.Split(',');
+                    var coord = new Location
+                    {
+                        Longitude = double.Parse(xy[0], CultureInfo.InvariantCulture),
+                        Latitude = double.Parse(xy[1], CultureInfo.InvariantCulture)
+                    };
+                    return coord;
+                }).ToList();
+                list.Add(locations);
+            }
+
+            return list;
         }
     }
 }

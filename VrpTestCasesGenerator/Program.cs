@@ -99,15 +99,18 @@ namespace VrpTestCasesGenerator
             Arguments args = new Arguments()
             {
                 ProblemName = "Test",
-                Clients = 5,
+                Clients = 100,
                 DepotLatitude = 52.231838,
                 DepotLongitude = 21.005995,
                 Capacity = 100,
                 Streets = new List<string>()
                 {
+                    "Marszalkowska",
                     "Noakowskiego",
                     "Polna",
-                    "Koszykowa"
+                    "Koszykowa",
+                    "Aleje Jerozolimskie",
+                    "Puławska"
                 },
                 NumberOfInstances = 1,
                 IncludeCoords = true
