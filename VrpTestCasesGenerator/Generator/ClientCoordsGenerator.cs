@@ -23,8 +23,6 @@ namespace VrpTestCasesGenerator.Generator
         public ClientCoordsGenerator(INominatimClient nominatimClient, double standardDeviation)
         {
             _nominatimClient = nominatimClient;
-            var covarianceMatrix = new double[2, 2];
-            covarianceMatrix[0, 0] = covarianceMatrix[1, 1] = standardDeviation * standardDeviation;
             var uniform = new UniformContinuousDistribution(-dist, +dist);
             _distribution = new Independent<UniformContinuousDistribution>(uniform, uniform);
         }
@@ -37,10 +35,9 @@ namespace VrpTestCasesGenerator.Generator
             foreach (var streetName in streetNames)
             {
                 var streetParts = await _nominatimClient.GetStreetParts(streetName);
-                var streetPoints = await _nominatimClient.GetStreetPoints(streetName);
-                var street = new Street(streetPoints);
-                streets.Add(street);
-                distSum += street.Distance;
+                var realStreet = streetParts.Select(s => new Street(s));
+                streets.AddRange(realStreet);
+                distSum += realStreet.Sum(s => s.Distance);
             }
 
             var pointsPerStreet = streets.Select(s => (int)Math.Round(clientCount * s.Distance / distSum)).ToArray();
@@ -67,7 +64,7 @@ namespace VrpTestCasesGenerator.Generator
         {
             var locations = new List<Location>(count);
             var samples = _distribution.Generate(count);
-            
+
             double step = street.Distance / count;
             double distance = step / 2;
 

@@ -31,7 +31,7 @@ namespace VrpTestCasesGenerator.Generator
 
         public async Task<double> GetDistance(Location from, Location to)
         {
-            var builder = new UriBuilder(@"http://194.29.178.216:8989/route");
+            var builder = new UriBuilder(@"http://localhost:8989/route");
             var parameters = new List<(string, string)>();
             parameters.Add(("point", from.ToString()));
             parameters.Add(("point", to.ToString()));
