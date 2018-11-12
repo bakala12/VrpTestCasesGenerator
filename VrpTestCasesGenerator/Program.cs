@@ -10,6 +10,9 @@ using VrpTestCasesGenerator.Writer;
 
 namespace VrpTestCasesGenerator
 {
+    /// <summary>
+    /// A class that describes application parameters.
+    /// </summary>
     public class Arguments
     {
         [Option('p', "problemName", Required = true, HelpText = "Problem name")]

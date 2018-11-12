@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -13,23 +14,42 @@ using VrpTestCasesGenerator.Model;
 
 namespace VrpTestCasesGenerator.Generator
 {
+    /// <summary>
+    /// Represents a Nominatim web service client.
+    /// </summary>
     public interface INominatimClient
     {
-        Task<List<Location>> GetStreetPoints(string streetName);
-        Task<Address> GetAddress(Location coords);
+        /// <summary>
+        /// Gets the street geometry for the given street name. Nominatim returns a list of street parts and each part is a list of locations.
+        /// </summary>
+        /// <param name="streetName">Name of the street.</param>
+        /// <returns>A task that represents asynchronous operation.</returns>
         Task<List<List<Location>>> GetStreetParts(string streetName);
     }
 
+    /// <summary>
+    /// Implementation of Nominatim client.
+    /// </summary>
     public class NominatimClient : INominatimClient
     {
         private readonly HttpClient _httpClient;
+        private readonly string _webServiceAddress;
 
+        /// <summary>
+        /// Initializes a new instance of NominatimClient.
+        /// </summary>
         public NominatimClient()
         {
             _httpClient = new HttpClient();
+            _webServiceAddress = ConfigurationManager.AppSettings["NominatimAddress"];
             _httpClient.DefaultRequestHeaders.Add("User-Agent", "VrpTestCasesGenerator");
         }
 
+        /// <summary>
+        /// Gets the street geometry for the given street name. It uses only first part of the street.
+        /// </summary>
+        /// <param name="streetName">Name of the street.</param>
+        /// <returns>A task that represents asynchronous operation.</returns>
         public async Task<List<Location>> GetStreetPoints(string streetName)
         {
             var builder = new UriBuilder(@"https://nominatim.openstreetmap.org/search");
@@ -86,6 +106,11 @@ namespace VrpTestCasesGenerator.Generator
             return result;
         }
 
+        /// <summary>
+        /// Gets the details of the address at the given location.
+        /// </summary>
+        /// <param name="coords">Location</param>
+        /// <returns>Asynchronous operation task.</returns>
         public async Task<Address> GetAddress(Location coords)
         {
             var builder = new UriBuilder(@"https://nominatim.openstreetmap.org/reverse");
@@ -123,10 +148,15 @@ namespace VrpTestCasesGenerator.Generator
             return await _httpClient.GetAsync(requestUri);
         }
 
+        /// <summary>
+        /// Gets the street geometry for the given street name. Nominatim returns a list of street parts and each part is a list of locations.
+        /// </summary>
+        /// <param name="streetName">Name of the street.</param>
+        /// <returns>A task that represents asynchronous operation.</returns>
         public async Task<List<List<Location>>> GetStreetParts(string streetName)
         {
             List<List<Location>> list = new List<List<Location>>();
-            var builder = new UriBuilder(@"https://nominatim.openstreetmap.org/search");
+            var builder = new UriBuilder(_webServiceAddress);
 
             var query = HttpUtility.ParseQueryString(builder.Query);
             query["format"] = "xml";

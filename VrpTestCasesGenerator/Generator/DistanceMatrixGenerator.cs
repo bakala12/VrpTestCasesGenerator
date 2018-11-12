@@ -8,20 +8,40 @@ using VrpTestCasesGenerator.Model;
 
 namespace VrpTestCasesGenerator.Generator
 {
+    /// <summary>
+    /// Provides a method for generating distance matrix for VRP problem.
+    /// </summary>
     public interface IDistanceMatrixGenerator
     {
+        /// <summary>
+        /// Generates distance matrix for the given locations.
+        /// </summary>
+        /// <param name="locations">List of points.</param>
+        /// <returns>A task that represents asynchronous operation.</returns>
         Task<DistanceMatrix> GenerateDistanceMatrix(IList<Location> locations);
     }
 
+    /// <summary>
+    /// An implementation of IDistanceMatrixGenerator interface that make use of GraphHopper web service.
+    /// </summary>
     public class DistanceMatrixGenerator : IDistanceMatrixGenerator
     {
         private readonly IGraphHopperClient _graphHopperClient;
 
+        /// <summary>
+        /// Initializes a new instance of Distance matrix generator.
+        /// </summary>
+        /// <param name="graphHopperClient"></param>
         public DistanceMatrixGenerator(IGraphHopperClient graphHopperClient)
         {
             _graphHopperClient = graphHopperClient;
         }
 
+        /// <summary>
+        /// Generates distance matrix for the given locations.
+        /// </summary>
+        /// <param name="locations">List of points.</param>
+        /// <returns>A task that represents asynchronous operation.</returns>
         public async Task<DistanceMatrix> GenerateDistanceMatrix(IList<Location> locations)
         {
             DistanceMatrix matrix = new DistanceMatrix(locations.Count);

@@ -6,13 +6,23 @@ using System.Threading.Tasks;
 
 namespace VrpTestCasesGenerator.Model
 {
+    /// <summary>
+    /// Represents a part of the street.
+    /// </summary>
     public struct Street
     {
+        /// <summary>
+        /// Gets the distance from the beginning to the end of the street.
+        /// </summary>
         public double Distance { get; }
 
         private readonly double[] _nodeDistances;
         private readonly List<Location> _streetPoints;
 
+        /// <summary>
+        /// Initializes a new instance of the street.
+        /// </summary>
+        /// <param name="streetPoints">Street points.</param>
         public Street(List<Location> streetPoints)
         {
             _streetPoints = streetPoints;
@@ -29,6 +39,11 @@ namespace VrpTestCasesGenerator.Model
             }
         }
 
+        /// <summary>
+        /// Gets intermediate point of the street at the given distance.
+        /// </summary>
+        /// <param name="distance">Distance.</param>
+        /// <returns>A point on the street at the given distance from beginning.</returns>
         public Location GetIntermediatePoint(double distance)
         {
             if (distance < 0 || distance > Distance)

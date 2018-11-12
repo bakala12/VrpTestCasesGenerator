@@ -1,23 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Configuration;
 using Newtonsoft.Json;
 using VrpTestCasesGenerator.Model;
 
 namespace VrpTestCasesGenerator.Generator
 {
+    /// <summary>
+    /// Represents a client for GraphHopper web service.
+    /// </summary>
     public interface IGraphHopperClient
     {
+        /// <summary>
+        /// Get the distance between two points on the map. This takes into account existing streets architecture.
+        /// </summary>
+        /// <param name="from">Source point.</param>
+        /// <param name="to">Destination point.</param>
+        /// <returns>A task that represents asynchronous operation.</returns>
         Task<double> GetDistance(Location from, Location to);
     }
 
+    /// <summary>
+    /// An implementation of IGraphHopperClient interface.
+    /// </summary>
     public class GraphHopperClient : IGraphHopperClient
     {
         private readonly HttpClient _client = new HttpClient();
+        private readonly string _webServiceAddress;
+
+        /// <summary>
+        /// Initializes a new instance of GraphHopperClient.
+        /// </summary>
+        public GraphHopperClient()
+        {
+            _webServiceAddress = ConfigurationManager.AppSettings["GraphHopperAddress"];
+        }
 
         private class PathModel
         {
@@ -29,9 +52,15 @@ namespace VrpTestCasesGenerator.Generator
             public PathModel[] Paths { get; set; } 
         }
 
+        /// <summary>
+        /// Get the distance between two points on the map. This takes into account existing streets architecture.
+        /// </summary>
+        /// <param name="from">Source point.</param>
+        /// <param name="to">Destination point.</param>
+        /// <returns>A task that represents asynchronous operation.</returns>
         public async Task<double> GetDistance(Location from, Location to)
         {
-            var builder = new UriBuilder(@"http://localhost:8989/route");
+            var builder = new UriBuilder(_webServiceAddress);
             var parameters = new List<(string, string)>();
             parameters.Add(("point", from.ToString()));
             parameters.Add(("point", to.ToString()));

@@ -5,12 +5,21 @@ using VrpTestCasesGenerator.Model;
 
 namespace VrpTestCasesGenerator.Generator
 {
+    /// <summary>
+    /// Implementation of IVrpGenerator interface.
+    /// </summary>
     public class VrpGenerator : IVrpGenerator
     {
         private readonly IDemandGenerator _demandGenerator;
         private readonly IClientCoordsGenerator _clientCoordsGenerator;
         private readonly IDistanceMatrixGenerator _distanceMatrixGenerator;
 
+        /// <summary>
+        /// Initializes a new instance of VrpGenerator.
+        /// </summary>
+        /// <param name="demandGenerator">Demand generator.</param>
+        /// <param name="clientCoordsGenerator">Client coordinates generator.</param>
+        /// <param name="distanceMatrixGenerator">Distance matrix generator.</param>
         public VrpGenerator(IDemandGenerator demandGenerator, IClientCoordsGenerator clientCoordsGenerator, IDistanceMatrixGenerator distanceMatrixGenerator)
         {
             _demandGenerator = demandGenerator;
@@ -18,6 +27,11 @@ namespace VrpTestCasesGenerator.Generator
             _distanceMatrixGenerator = distanceMatrixGenerator;
         }
 
+        /// <summary>
+        /// Generates random map VRP problem instance.
+        /// </summary>
+        /// <param name="parameters">Problem parameters.</param>
+        /// <returns>A task that represents asynchronous operation.</returns>
         public async Task<VrpProblem> Generate(GeneratorParameters parameters)
         {
             int[] demands = _demandGenerator.GenerateDemands(parameters.Clients);

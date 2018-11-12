@@ -9,8 +9,17 @@ using VrpTestCasesGenerator.Model;
 
 namespace VrpTestCasesGenerator.Writer
 {
+    /// <summary>
+    /// An implementation of the IVrpProblemWriter interface.
+    /// </summary>
     public class VrpProblemWriter : IVrpProblemWriter
     {
+        /// <summary>
+        /// Saves VRP problem instance to a file.
+        /// </summary>
+        /// <param name="problem">VRP problem instance.</param>
+        /// <param name="file">Path to file.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
         public async Task Write(VrpProblem problem, string file)
         {
             await Task.Run(() => WriteToFile(problem, file));

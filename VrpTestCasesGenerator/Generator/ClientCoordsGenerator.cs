@@ -9,17 +9,36 @@ using VrpTestCasesGenerator.Model;
 
 namespace VrpTestCasesGenerator.Generator
 {
+    /// <summary>
+    /// Provides a method for generating client location at given streets.
+    /// </summary>
     public interface IClientCoordsGenerator
     {
+        /// <summary>
+        /// Generates random client location on the map using given list of streets.
+        /// </summary>
+        /// <param name="clientCount"></param>
+        /// <param name="streetNames">List of street names.</param>
+        /// <returns>A task that represents asynchronous operation.</returns>
         Task<List<Location>> GenerateClientCoords(int clientCount, IEnumerable<string> streetNames);
     }
 
+    /// <summary>
+    /// An implementation of IClientCoordsGenerator interface. It uses Nominatim web service to get information
+    /// about the streets' geometry and then use two dimensional uniform distribution to generate random points
+    /// next to the streets.
+    /// </summary>
     public class ClientCoordsGenerator : IClientCoordsGenerator
     {
         private readonly INominatimClient _nominatimClient;
         private readonly Independent<UniformContinuousDistribution> _distribution;
         private const double dist = 0.0005396; //constant that is approximatively 60m in Earth coordinate
 
+        /// <summary>
+        /// Initializes a new instance of ClientCoordsGenerator class.
+        /// </summary>
+        /// <param name="nominatimClient">Nominatim client.</param>
+        /// <param name="standardDeviation">Standard deviation for two dimensional uniform distribution.</param>
         public ClientCoordsGenerator(INominatimClient nominatimClient, double standardDeviation)
         {
             _nominatimClient = nominatimClient;
@@ -27,6 +46,12 @@ namespace VrpTestCasesGenerator.Generator
             _distribution = new Independent<UniformContinuousDistribution>(uniform, uniform);
         }
 
+        /// <summary>
+        /// Generates random client location on the map using given list of streets.
+        /// </summary>
+        /// <param name="clientCount"></param>
+        /// <param name="streetNames">List of street names.</param>
+        /// <returns>A task that represents asynchronous operation.</returns>
         public async Task<List<Location>> GenerateClientCoords(int clientCount, IEnumerable<string> streetNames)
         {
             List<Street> streets = new List<Street>();
