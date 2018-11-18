@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VrpTestCasesGenerator.Generator;
 
-namespace VrpTestCasesGenerator.Tests
+namespace VrpTestCasesGenerator.Test
 {
     [TestClass]
     public class DemandGeneratorTests

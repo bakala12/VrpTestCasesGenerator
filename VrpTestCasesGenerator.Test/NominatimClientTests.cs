@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VrpTestCasesGenerator.Generator;
 using VrpTestCasesGenerator.Model;
 
-namespace VrpTestCasesGenerator.Tests
+namespace VrpTestCasesGenerator.Test
 {
     [TestClass]
     public class NominatimClientTests
