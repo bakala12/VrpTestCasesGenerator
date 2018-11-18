@@ -41,5 +41,26 @@ namespace VrpTestCasesGenerator.Test
 
             Assert.AreEqual(expectedDist, actualDist);
         }
+
+        [TestMethod]
+        public void GraphHopperWithCoerctionTest()
+        {
+            var startLat = 52.196366;
+            var startLon = 21.03214;
+            var endLat = 52.196853;
+            var endLon = 21.03104;
+            var expectedGHDist = 27;
+            var startDist = 37;
+            var endDist = 51;
+            var expectedCoerceDist = startDist+expectedGHDist+endDist;
+
+            var actualGHDist = _client.GetDistance(new Location(startLat, startLon), new Location(endLat, endLon), false).Result;
+            var actualCoercedGHDist = _client.GetDistance(new Location(startLat, startLon), new Location(endLat, endLon), true).Result;
+            var euclideanDist = _client.CalculateSimpleDistance(startLat, startLon, endLat, endLon);
+
+            Assert.AreEqual(expectedGHDist, actualGHDist, 1);
+            Assert.AreEqual(expectedCoerceDist, actualCoercedGHDist,1);
+            Assert.IsTrue(euclideanDist < actualCoercedGHDist);
+        }
     }
 }
