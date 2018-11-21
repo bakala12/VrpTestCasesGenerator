@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using VrpTestCasesGenerator.Model;
 
@@ -37,7 +38,17 @@ namespace VrpTestCasesGenerator.Generator
             int[] demands = _demandGenerator.GenerateDemands(parameters.Clients);
             List<Location> coords = new List<Location>(parameters.Clients + 1);
             coords.Add(parameters.Depot);
-            coords.AddRange(await _clientCoordsGenerator.GenerateClientCoords(parameters.Clients, parameters.Streets));
+            var generated = await _clientCoordsGenerator.GenerateClientCoords(parameters.Clients, parameters.Streets);
+            coords.AddRange(generated.SelectMany(x => x.Locations));
+            var groups = new Dictionary<int, LocationGroup>();
+            int id = 1;
+            foreach (var g in generated)
+            {
+                foreach (var gLocation in g.Locations)
+                {
+                    groups.Add(id++, g.LocationGroup);
+                }
+            }
             var matrix = await _distanceMatrixGenerator.GenerateDistanceMatrix(coords);
 
             var problem = new VrpProblem()
@@ -48,7 +59,8 @@ namespace VrpTestCasesGenerator.Generator
                 DepotIndex = 0,
                 Dimension = parameters.Clients+1,
                 Distances = matrix,
-                Name = parameters.ProblemName
+                Name = parameters.ProblemName,
+                LocationGroups = groups
             };
             if (parameters.IncludeCoords)
             {

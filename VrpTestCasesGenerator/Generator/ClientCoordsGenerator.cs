@@ -20,7 +20,7 @@ namespace VrpTestCasesGenerator.Generator
         /// <param name="clientCount"></param>
         /// <param name="streetNames">List of street names.</param>
         /// <returns>A task that represents asynchronous operation.</returns>
-        Task<List<Location>> GenerateClientCoords(int clientCount, IEnumerable<string> streetNames);
+        Task<List<GeneratedLocations>> GenerateClientCoords(int clientCount, IEnumerable<string> streetNames);
     }
 
     /// <summary>
@@ -52,7 +52,7 @@ namespace VrpTestCasesGenerator.Generator
         /// <param name="clientCount"></param>
         /// <param name="streetNames">List of street names.</param>
         /// <returns>A task that represents asynchronous operation.</returns>
-        public async Task<List<Location>> GenerateClientCoords(int clientCount, IEnumerable<string> streetNames)
+        public async Task<List<GeneratedLocations>> GenerateClientCoords(int clientCount, IEnumerable<string> streetNames)
         {
             List<Street> streets = new List<Street>();
             double distSum = 0;
@@ -60,7 +60,7 @@ namespace VrpTestCasesGenerator.Generator
             foreach (var streetName in streetNames)
             {
                 var streetParts = await _nominatimClient.GetStreetParts(streetName);
-                var realStreet = streetParts.Select(s => new Street(s));
+                var realStreet = streetParts.Select(s => new Street(streetName, s));
                 streets.AddRange(realStreet);
                 distSum += realStreet.Sum(s => s.Distance);
             }
@@ -75,11 +75,24 @@ namespace VrpTestCasesGenerator.Generator
                     IncreaseMinimum(pointsPerStreet, ref diff);
             }
 
-            var locations = new List<Location>(clientCount);
+            var locations = new List<GeneratedLocations>();
+            int id = 0;
             for (int i = 0; i < streets.Count; i++)
             {
                 var street = streets[i];
-                locations.AddRange(GenerateLocationsForStreet(street, pointsPerStreet[i]));
+                var loc = GenerateLocationsForStreet(street, pointsPerStreet[i]);
+                if (loc.Any()) id++;
+                var group = new LocationGroup()
+                {
+                    Id = id,
+                    StreetName = street.Name
+                };
+                var generated = new GeneratedLocations()
+                {
+                    LocationGroup = group,
+                    Locations = loc
+                };
+                locations.Add(generated);
             }
 
             return locations;
@@ -95,7 +108,7 @@ namespace VrpTestCasesGenerator.Generator
 
             for (int i = 0; i < count; i++)
             {
-                var location = street.GetIntermediatePoint(distance);
+                var location = street.GetIntermediatePoint(distance); //sprawdzic
                 var sample = samples[i];
                 location.Latitude += sample[0];
                 location.Longitude += sample[1];

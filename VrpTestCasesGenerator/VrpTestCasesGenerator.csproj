@@ -112,6 +112,8 @@
     <Compile Include="Generator\IVrpGenerator.cs" />
     <Compile Include="Generator\NominatimClient.cs" />
     <Compile Include="Model\Address.cs" />
+    <Compile Include="Model\GeneratedLocations.cs" />
+    <Compile Include="Model\LocationGroup.cs" />
     <Compile Include="Model\Street.cs" />
     <Compile Include="Writer\IVrpProblemWriter.cs" />
     <Compile Include="Model\Location.cs" />

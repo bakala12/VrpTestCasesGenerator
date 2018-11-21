@@ -16,15 +16,22 @@ namespace VrpTestCasesGenerator.Model
         /// </summary>
         public double Distance { get; }
 
+        /// <summary>
+        /// Gets the name of the street.
+        /// </summary>
+        public string Name { get; }
+
         private readonly double[] _nodeDistances;
         private readonly List<Location> _streetPoints;
 
         /// <summary>
         /// Initializes a new instance of the street.
         /// </summary>
+        /// <param name="name">Name of the street.</param>
         /// <param name="streetPoints">Street points.</param>
-        public Street(List<Location> streetPoints)
+        public Street(string name, List<Location> streetPoints)
         {
+            Name = name;
             _streetPoints = streetPoints;
             _nodeDistances = new double[streetPoints.Count - 1];
 

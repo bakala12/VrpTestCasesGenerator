@@ -30,7 +30,7 @@ namespace VrpTestCasesGenerator.Model
         /// <summary>
         /// Gets or sets client demands. Element at index DepotIndex should be 0 (this is demand for depot which must be 0). 
         /// </summary>
-        public int[] Demands { get; set; } 
+        public int[] Demands { get; set; }
         /// <summary>
         /// Gets or set index of depot. Typically is 0.
         /// </summary>
@@ -40,8 +40,12 @@ namespace VrpTestCasesGenerator.Model
         /// </summary>
         public DistanceMatrix Distances { get; set; }
         /// <summary>
-        /// Gets or sets node' coordinates.
+        /// Gets or sets node's coordinates.
         /// </summary>
         public Location[] Coordinates { get; set; }
+        /// <summary>
+        /// Gets or sets location groups. Key is location id, value is appropriate loaction group.
+        /// </summary>
+        public IDictionary<int, LocationGroup> LocationGroups { get; set; }
     }
 }

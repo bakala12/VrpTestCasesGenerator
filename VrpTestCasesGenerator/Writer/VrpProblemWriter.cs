@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Accord.Collections;
 using VrpTestCasesGenerator.Model;
 
 namespace VrpTestCasesGenerator.Writer
@@ -25,32 +26,74 @@ namespace VrpTestCasesGenerator.Writer
             await Task.Run(() => WriteToFile(problem, file));
         }
 
+        /// <summary>
+        /// Saves VRP problem instance to a file (it also saves some additional information like locating nodes around the streets).
+        /// </summary>
+        /// <param name="problem">VRP problem instance.</param>
+        /// <param name="file">Path to file.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task WriteWithAdditionalInfo(VrpProblem problem, string file)
+        {
+            await Task.Run(() => WriteToFileWithAdditionalInfo(problem, file));
+        }
+
+        private void WriteToFileWithAdditionalInfo(VrpProblem problem, string file)
+        {
+            using (var fs = new FileStream(file, FileMode.OpenOrCreate))
+            {
+                using (var sw = new StreamWriter(fs))
+                {
+                    sw.WriteLine($"NAME : {problem.Name}");
+                    sw.WriteLine($"COMMENT: {problem.Comment}");
+                    sw.WriteLine("TYPE : CVRP");
+                    sw.WriteLine($"DIMENSION : {problem.Dimension}");
+                    sw.WriteLine("EDGE_WEIGHT_TYPE : ADJ"); //revisit
+                    sw.WriteLine("EDGE_WEIGHT_FORMAT: FULL_MATRIX"); //revisit
+                    if (problem.Coordinates == null)
+                    {
+                        sw.WriteLine("DISPLAY_DATA_TYPE: NO_DISPLAY");
+                    }
+                    else
+                    {
+                        sw.WriteLine("DISPLAY_DATA_TYPE: TWOD_DISPLAY");
+                        WriteCoordinates(sw, problem.Coordinates);
+                    }
+                    sw.WriteLine($"CAPACITY : {problem.Capacity}");
+                    WriteMatrixAdj(sw, problem.Distances);
+                    WriteDemands(sw, problem.Demands);
+                    WriteLocationGroups(sw, problem.LocationGroups);
+                    WriteDepot(sw);
+                    sw.WriteLine("EOF");
+                }
+            }
+        }
+
         private void WriteToFile(VrpProblem problem, string file)
         {
             using (var fs = new FileStream(file, FileMode.OpenOrCreate))
             {
                 using (var sw = new StreamWriter(fs))
                 {
-                    sw.WriteLineAsync($"NAME : {problem.Name}");
-                    sw.WriteLineAsync($"COMMENT: {problem.Comment}");
-                    sw.WriteLineAsync("TYPE : CVRP");
-                    sw.WriteLineAsync($"DIMENSION : {problem.Dimension}");
-                    sw.WriteLineAsync("EDGE_WEIGHT_TYPE : EXPLICIT");
-                    sw.WriteLineAsync("EDGE_WEIGHT_FORMAT: FULL_MATRIX");
+                    sw.WriteLine($"NAME : {problem.Name}");
+                    sw.WriteLine($"COMMENT: {problem.Comment}");
+                    sw.WriteLine("TYPE : CVRP");
+                    sw.WriteLine($"DIMENSION : {problem.Dimension}");
+                    sw.WriteLine("EDGE_WEIGHT_TYPE : EXPLICIT");
+                    sw.WriteLine("EDGE_WEIGHT_FORMAT: FULL_MATRIX");
                     if (problem.Coordinates == null)
                     {
-                        sw.WriteLineAsync("DISPLAY_DATA_TYPE: NO_DISPLAY");
+                        sw.WriteLine("DISPLAY_DATA_TYPE: NO_DISPLAY");
                     }
                     else
                     {
-                        sw.WriteLineAsync("DISPLAY_DATA_TYPE: TWOD_DISPLAY");
+                        sw.WriteLine("DISPLAY_DATA_TYPE: TWOD_DISPLAY");
                         WriteCoordinates(sw, problem.Coordinates);
                     }
-                    sw.WriteLineAsync($"CAPACITY : {problem.Capacity}");
+                    sw.WriteLine($"CAPACITY : {problem.Capacity}");
                     WriteMatrix(sw, problem.Distances);
                     WriteDemands(sw, problem.Demands);
                     WriteDepot(sw);
-                    sw.WriteLineAsync("EOF");
+                    sw.WriteLine("EOF");
                 }
             }
         }
@@ -58,7 +101,7 @@ namespace VrpTestCasesGenerator.Writer
         private int FindDigits(DistanceMatrix matrix)
         {
             int max = 0;
-            for(int i = 0; i < matrix.Dimension; i++)
+            for (int i = 0; i < matrix.Dimension; i++)
             {
                 for (int j = 0; j < matrix.Dimension; j++)
                 {
@@ -87,11 +130,25 @@ namespace VrpTestCasesGenerator.Writer
                 for (int j = 0; j < matrix.Dimension; j++)
                 {
                     builder.Append("\t");
-                    builder.AppendFormat(maxFormat, (int) Math.Round(matrix[i, j]));
+                    builder.AppendFormat(maxFormat, (int)Math.Round(matrix[i, j]));
                 }
                 sw.WriteLine(builder.ToString());
                 builder.Clear();
             }
+        }
+
+        private void WriteMatrixAdj(StreamWriter sw, DistanceMatrix matrix)
+        {
+            sw.WriteLine("EDGE_WEIGHT_SECTION");
+            for (int i = 0; i < matrix.Dimension; i++)
+            {
+                for (int j = 0; j < matrix.Dimension; j++)
+                {
+                    var d = (int) Math.Round(matrix[i, j]);
+                    if(d > 0) sw.WriteLine($"{i} {j} {d}");
+                }
+            }
+            sw.WriteLine("-1");
         }
 
         private void WriteDemands(StreamWriter sw, int[] demands)
@@ -119,6 +176,16 @@ namespace VrpTestCasesGenerator.Writer
         {
             sw.WriteLine($"DEPOT_SECTION");
             sw.WriteLine("1");
+            sw.WriteLine("-1");
+        }
+
+        private void WriteLocationGroups(StreamWriter sw, IDictionary<int, LocationGroup> locationGroups)
+        {
+            sw.WriteLine("LOCATION_GROUP_SECTION");
+            foreach (var locationGroup in locationGroups)
+            {
+                sw.WriteLine($"{locationGroup.Key} {locationGroup.Value.Id}");
+            }
             sw.WriteLine("-1");
         }
     }
