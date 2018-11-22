@@ -18,13 +18,13 @@ namespace VrpTestCasesGenerator.Generator
     public interface IGraphHopperClient
     {
         /// <summary>
-        /// Get the distance between two points on the map. This takes into account existing streets architecture.
+        /// Get the distance and number of crossings between two points on the map. This takes into account existing streets architecture.
         /// </summary>
         /// <param name="from">Source point.</param>
         /// <param name="to">Destination point.</param>
-        /// <param name="withCoerce">Indicates whether to use start and end point distance coerction</param>
+        /// <param name="withCoerce">Indicates whether to use start and end point distance correction.</param>
         /// <returns>A task that represents asynchronous operation.</returns>
-        Task<double> GetDistance(Location from, Location to, bool withCoerce = true);
+        Task<Tuple<double, int>> GetDistance(Location from, Location to, bool withCoerce = true);
     }
 
     /// <summary>
@@ -48,10 +48,24 @@ namespace VrpTestCasesGenerator.Generator
             public double[][] Coordinates { get; set; }
         }
 
+        private class InstructionModel
+        {
+            public int Sign { get; set; }
+        }
+
+        private class SnappedWaypointsModel
+        {
+            public string Type { get; set; }
+            public double[][] Coordinates { get; set; }
+        }
+
         private class PathModel
         {
             public double Distance { get; set; }
             public PointsModel Points { get; set; }
+            public InstructionModel[] Instructions { get; set; }
+            [JsonProperty("snapped_waypoints")]
+            public SnappedWaypointsModel SnappedWaypoints { get; set; }
         }
 
         private class ResponseModel
@@ -60,20 +74,20 @@ namespace VrpTestCasesGenerator.Generator
         }
 
         /// <summary>
-        /// Get the distance between two points on the map. This takes into account existing streets architecture.
+        /// Get the distance and number of crossings between two points on the map. This takes into account existing streets architecture.
         /// </summary>
         /// <param name="from">Source point.</param>
         /// <param name="to">Destination point.</param>
-        /// <param name="withCoerce">Indicates whether to use start and end point distance coerction</param>
+        /// <param name="withCoerce">Indicates whether to use start and end point distance correction.</param>
         /// <returns>A task that represents asynchronous operation.</returns>
-        public async Task<double> GetDistance(Location from, Location to, bool withCoerce = true)
+        public async Task<Tuple<double, int>> GetDistance(Location from, Location to, bool withCoerce = true)
         {
             var builder = new UriBuilder(_webServiceAddress);
             var parameters = new List<(string, string)>();
             parameters.Add(("point", from.ToString()));
             parameters.Add(("point", to.ToString()));
             parameters.Add(("locale", "pl-PL"));
-            parameters.Add(("instructions", "false"));
+            parameters.Add(("instructions", "true"));
             parameters.Add(("vehicle", "car"));
             parameters.Add(("weighting", "fastest"));
             parameters.Add(("elevation", "false"));
@@ -85,9 +99,8 @@ namespace VrpTestCasesGenerator.Generator
             if (!response.IsSuccessStatusCode)
                 throw new HttpException((int)response.StatusCode, response.ReasonPhrase);
             var resp = JsonConvert.DeserializeObject<ResponseModel>(await response.Content.ReadAsStringAsync());
-            if(withCoerce)
-                return CoerceDistance(from, resp, to);
-            return resp.Paths[0].Distance;
+            var dist = withCoerce ? CoerceDistance(from, resp, to) : resp.Paths[0].Distance;
+            return new Tuple<double, int>(dist, resp.Paths[0].Instructions.Length-2);
         }
 
         //This is because of GraphHopper two parameter for point key.

@@ -6,6 +6,7 @@ namespace VrpTestCasesGenerator.Model
     public class DistanceMatrix
     {
         private readonly double[,] _distances;
+        private readonly int[,] _crossingCounts;
 
         /// <summary>
         /// Gets the dimension of the (square) matrix.
@@ -20,6 +21,7 @@ namespace VrpTestCasesGenerator.Model
         {
             Dimension = dimension;
             _distances = new double[dimension, dimension];
+            _crossingCounts = new int[dimension,dimension];
         }
 
         /// <summary>
@@ -33,5 +35,21 @@ namespace VrpTestCasesGenerator.Model
             get => _distances[from, to];
             set => _distances[from, to] = value;
         }
+
+        /// <summary>
+        /// Gets number of crossing between points.
+        /// </summary>
+        /// <param name="from">Source vertex.</param>
+        /// <param name="to">Destination vertex.</param>
+        /// <returns>Number of crossings between two vertices.</returns>
+        public int GetCrossingCount(int from, int to) => _crossingCounts[from, to];
+
+        /// <summary>
+        /// Sets number of crossing between points.
+        /// </summary>
+        /// <param name="from">Source vertex.</param>
+        /// <param name="to">Destination vertex.</param>
+        /// <param name="value">Number of crossings.</param>
+        public void SetCrossingCount(int from, int to, int value) => _crossingCounts[from, to] = value;
     }
 }

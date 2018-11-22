@@ -31,18 +31,16 @@ namespace VrpTestCasesGenerator
         [Option('o', "output", Required = false, HelpText = "Output path")]
         public string OutputPath { get; set; }
 
-        //By default Pałac kultury i Nauki
-        [Option("lat", Required = false, Default = 52.231838, HelpText = "Depot latitude")]
+        [Option("lat", Required = false, Default = 52.254429, HelpText = "Depot latitude")]
         public double DepotLatitude { get; set; }
 
-        //By default Pałac kultury i Nauki
-        [Option("lon", Required = false, Default = 21.005995, HelpText = "Depot longitude")]
+        [Option("lon", Required = false, Default = 20.970360, HelpText = "Depot longitude")]
         public double DepotLongitude { get; set; }
 
         [Option("capacity", Default = 100, Required = false, HelpText = "Vehicle capacity")]
         public int Capacity { get; set; }
 
-        [Option("includeCoords", Default = false, Required = false, HelpText = "Output node coordinates")]
+        [Option("includeCoords", Default = true, Required = false, HelpText = "Output node coordinates")]
         public bool IncludeCoords { get; set; }
 
         [Option('a', "additionalInfo", Required = false, Default = null, HelpText = "A path for benchmark file with additional info as LOCATION_GROUPS_SECTION")]
@@ -121,7 +119,7 @@ namespace VrpTestCasesGenerator
                     "Aleje Jerozolimskie",
                     "Puławska"
                 },
-                NumberOfInstances = 3,
+                NumberOfInstances = 1,
                 IncludeCoords = true,
                 AdditionalInfoFilePath = "Benchmarks\\TestAdd.vrp"
             };

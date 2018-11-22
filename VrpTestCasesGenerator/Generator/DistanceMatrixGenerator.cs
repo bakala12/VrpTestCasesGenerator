@@ -50,9 +50,16 @@ namespace VrpTestCasesGenerator.Generator
                 for (int j = 0; j < locations.Count; j++)
                 {
                     if (i == j)
+                    {
                         matrix[i, j] = 0;
+                        matrix.SetCrossingCount(i, j, 0);
+                    }
                     else
-                        matrix[i, j] = await _graphHopperClient.GetDistance(locations[i], locations[j]);
+                    {
+                        var res = await _graphHopperClient.GetDistance(locations[i], locations[j]);
+                        matrix[i, j] = res.Item1;
+                        matrix.SetCrossingCount(i, j, res.Item2);
+                    }
                 }
             }
             return matrix;

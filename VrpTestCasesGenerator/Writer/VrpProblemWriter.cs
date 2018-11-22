@@ -145,7 +145,8 @@ namespace VrpTestCasesGenerator.Writer
                 for (int j = 0; j < matrix.Dimension; j++)
                 {
                     var d = (int) Math.Round(matrix[i, j]);
-                    if(d > 0) sw.WriteLine($"{i} {j} {d}");
+                    var c = matrix.GetCrossingCount(i, j);
+                    if(d > 0) sw.WriteLine($"{i} {j} {d} {c}");
                 }
             }
             sw.WriteLine("-1");

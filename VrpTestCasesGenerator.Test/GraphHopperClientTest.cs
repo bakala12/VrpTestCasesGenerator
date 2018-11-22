@@ -17,15 +17,15 @@ namespace VrpTestCasesGenerator.Test
         [TestMethod]
         public void ConnectivityTest()
         {
-            double dist = _client.GetDistance(new Location(52.226469, 20.989519), new Location(52.22752, 20.988843)).Result;
+            var dist = _client.GetDistance(new Location(52.226469, 20.989519), new Location(52.22752, 20.988843)).Result;
             Assert.IsTrue(true);
         }
 
         [TestMethod]
         public void CorrectResultTest()
         {
-            double dist = _client.GetDistance(new Location(52.226469, 20.989519), new Location(52.22752, 20.988843), false).Result;
-            Assert.AreEqual(dist, 222, 1);
+            var dist = _client.GetDistance(new Location(52.226469, 20.989519), new Location(52.22752, 20.988843), false).Result;
+            Assert.AreEqual(dist.Item1, 222, 1);
         }
 
         [TestMethod]
@@ -58,9 +58,19 @@ namespace VrpTestCasesGenerator.Test
             var actualCoercedGHDist = _client.GetDistance(new Location(startLat, startLon), new Location(endLat, endLon), true).Result;
             var euclideanDist = _client.CalculateSimpleDistance(startLat, startLon, endLat, endLon);
 
-            Assert.AreEqual(expectedGHDist, actualGHDist, 1);
-            Assert.AreEqual(expectedCoerceDist, actualCoercedGHDist,1);
-            Assert.IsTrue(euclideanDist < actualCoercedGHDist);
+            Assert.AreEqual(expectedGHDist, actualGHDist.Item1, 1);
+            Assert.AreEqual(expectedCoerceDist, actualCoercedGHDist.Item1,1);
+            Assert.IsTrue(euclideanDist < actualCoercedGHDist.Item1);
+        }
+
+        [TestMethod]
+        public void TestNumberOfCrossings()
+        {
+            var expectedCrossingsCount = 2;
+
+            var dist = _client.GetDistance(new Location(52.226469, 20.989519), new Location(52.22752, 20.988843), false).Result;
+
+            Assert.AreEqual(expectedCrossingsCount, dist.Item2);
         }
     }
 }
