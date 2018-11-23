@@ -45,6 +45,12 @@ namespace VrpTestCasesGenerator
 
         [Option('a', "additionalInfo", Required = false, Default = null, HelpText = "A path for benchmark file with additional info as LOCATION_GROUPS_SECTION")]
         public string AdditionalInfoFilePath { get; set; }
+
+        [Option("dalpha", Required = false, Default = 0.1, HelpText = "Alpha parameter for Beta distribution used for generating demands")]
+        public double AlphaDemandDistribution { get; set; }
+
+        [Option("dbeta", Required = false, Default = 0.1, HelpText = "Beta parameter for Beta distribution used for generating demands")]
+        public double BetaDemandDistribution { get; set; }
     }
 
     class Program
@@ -66,7 +72,7 @@ namespace VrpTestCasesGenerator
             INominatimClient nominatimClient = new NominatimClient();
 
             IVrpGenerator generator = new VrpGenerator(
-                new DemandGenerator(0.1, 1, arguments.Capacity), 
+                new DemandGenerator(arguments.AlphaDemandDistribution, arguments.BetaDemandDistribution, arguments.Capacity), 
                 new ClientCoordsGenerator(nominatimClient, 0.001), 
                 new DistanceMatrixGenerator(graphHopperClient));
 
@@ -121,7 +127,9 @@ namespace VrpTestCasesGenerator
                 },
                 NumberOfInstances = 1,
                 IncludeCoords = true,
-                AdditionalInfoFilePath = "Benchmarks\\TestAdd.vrp"
+                AdditionalInfoFilePath = "Benchmarks\\TestAdd.vrp",
+                AlphaDemandDistribution = 0.1,
+                BetaDemandDistribution = 1
             };
             Run(args);
         }
