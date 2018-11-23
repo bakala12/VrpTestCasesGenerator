@@ -56,13 +56,16 @@ namespace VrpTestCasesGenerator.Generator
         {
             List<Street> streets = new List<Street>();
             double distSum = 0;
-
+            var streetDic = new Dictionary<string, int>();
+            int sid = 1;
             foreach (var streetName in streetNames)
             {
                 var streetParts = await _nominatimClient.GetStreetParts(streetName);
                 var realStreet = streetParts.Select(s => new Street(streetName, s));
                 streets.AddRange(realStreet);
                 distSum += realStreet.Sum(s => s.Distance);
+                if(!streetDic.ContainsKey(streetName))
+                    streetDic.Add(streetName, sid++);
             }
 
             var pointsPerStreet = streets.Select(s => (int)Math.Round(clientCount * s.Distance / distSum)).ToArray();
@@ -81,10 +84,11 @@ namespace VrpTestCasesGenerator.Generator
             {
                 var street = streets[i];
                 var loc = GenerateLocationsForStreet(street, pointsPerStreet[i]);
-                if (loc.Any()) id++;
+                if (!loc.Any()) continue;
                 var group = new LocationGroup()
                 {
-                    Id = id,
+                    StreetId = streetDic[street.Name],
+                    StreetPartId = ++id,
                     StreetName = street.Name
                 };
                 var generated = new GeneratedLocations()
@@ -94,7 +98,6 @@ namespace VrpTestCasesGenerator.Generator
                 };
                 locations.Add(generated);
             }
-
             return locations;
         }
 

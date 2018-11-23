@@ -41,7 +41,8 @@ namespace VrpTestCasesGenerator.Generator
             var generated = await _clientCoordsGenerator.GenerateClientCoords(parameters.Clients, parameters.Streets);
             coords.AddRange(generated.SelectMany(x => x.Locations));
             var groups = new Dictionary<int, LocationGroup>();
-            int id = 1;
+            groups.Add(1, new LocationGroup(){StreetId = 0, StreetPartId = 0});
+            int id = 2;
             foreach (var g in generated)
             {
                 foreach (var gLocation in g.Locations)

@@ -39,7 +39,7 @@ namespace VrpTestCasesGenerator.Writer
 
         private void WriteToFileWithAdditionalInfo(VrpProblem problem, string file)
         {
-            using (var fs = new FileStream(file, FileMode.OpenOrCreate))
+            using (var fs = new FileStream(file, FileMode.OpenOrCreate | FileMode.Truncate))
             {
                 using (var sw = new StreamWriter(fs))
                 {
@@ -47,8 +47,9 @@ namespace VrpTestCasesGenerator.Writer
                     sw.WriteLine($"COMMENT: {problem.Comment}");
                     sw.WriteLine("TYPE : CVRP");
                     sw.WriteLine($"DIMENSION : {problem.Dimension}");
-                    sw.WriteLine("EDGE_WEIGHT_TYPE : ADJ"); //revisit
-                    sw.WriteLine("EDGE_WEIGHT_FORMAT: FULL_MATRIX"); //revisit
+                    sw.WriteLine("EDGE_WEIGHT_TYPE : EXPLICIT");
+                    sw.WriteLine("EDGE_WEIGHT_FORMAT: ADJ");
+                    sw.WriteLine($"CAPACITY : {problem.Capacity}");
                     if (problem.Coordinates == null)
                     {
                         sw.WriteLine("DISPLAY_DATA_TYPE: NO_DISPLAY");
@@ -58,7 +59,6 @@ namespace VrpTestCasesGenerator.Writer
                         sw.WriteLine("DISPLAY_DATA_TYPE: TWOD_DISPLAY");
                         WriteCoordinates(sw, problem.Coordinates);
                     }
-                    sw.WriteLine($"CAPACITY : {problem.Capacity}");
                     WriteMatrixAdj(sw, problem.Distances);
                     WriteDemands(sw, problem.Demands);
                     WriteLocationGroups(sw, problem.LocationGroups);
@@ -70,7 +70,7 @@ namespace VrpTestCasesGenerator.Writer
 
         private void WriteToFile(VrpProblem problem, string file)
         {
-            using (var fs = new FileStream(file, FileMode.OpenOrCreate))
+            using (var fs = new FileStream(file, FileMode.OpenOrCreate | FileMode.Truncate))
             {
                 using (var sw = new StreamWriter(fs))
                 {
@@ -80,6 +80,7 @@ namespace VrpTestCasesGenerator.Writer
                     sw.WriteLine($"DIMENSION : {problem.Dimension}");
                     sw.WriteLine("EDGE_WEIGHT_TYPE : EXPLICIT");
                     sw.WriteLine("EDGE_WEIGHT_FORMAT: FULL_MATRIX");
+                    sw.WriteLine($"CAPACITY : {problem.Capacity}");
                     if (problem.Coordinates == null)
                     {
                         sw.WriteLine("DISPLAY_DATA_TYPE: NO_DISPLAY");
@@ -89,7 +90,6 @@ namespace VrpTestCasesGenerator.Writer
                         sw.WriteLine("DISPLAY_DATA_TYPE: TWOD_DISPLAY");
                         WriteCoordinates(sw, problem.Coordinates);
                     }
-                    sw.WriteLine($"CAPACITY : {problem.Capacity}");
                     WriteMatrix(sw, problem.Distances);
                     WriteDemands(sw, problem.Demands);
                     WriteDepot(sw);
@@ -185,7 +185,7 @@ namespace VrpTestCasesGenerator.Writer
             sw.WriteLine("LOCATION_GROUP_SECTION");
             foreach (var locationGroup in locationGroups)
             {
-                sw.WriteLine($"{locationGroup.Key} {locationGroup.Value.Id}");
+                sw.WriteLine($"{locationGroup.Key} {locationGroup.Value.StreetId} {locationGroup.Value.StreetPartId}");
             }
             sw.WriteLine("-1");
         }
