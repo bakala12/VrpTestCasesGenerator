@@ -14,8 +14,19 @@ namespace VrpTestCasesGenerator.Test
         [TestMethod]
         public void DemandGenerationTest()
         {
-            var gen = new DemandGenerator(0.1, 1, 1000);
+            var gen = new BetaDemandGenerator(0.1, 1, 1000);
             var demands = gen.GenerateDemands(10);
+            foreach (var demand in demands)
+            {
+                Assert.IsTrue(demand > 0 && demand < 1000);
+            }
+        }
+
+        [TestMethod]
+        public void GammaDemandTests()
+        {
+            var gen = new GammaDemandGenerator(1.9, 0.033, 1000);
+            var demands = gen.GenerateDemands(1000);
             foreach (var demand in demands)
             {
                 Assert.IsTrue(demand > 0 && demand < 1000);

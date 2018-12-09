@@ -51,6 +51,15 @@ namespace VrpTestCasesGenerator
 
         [Option("dbeta", Required = false, Default = 0.1, HelpText = "Beta parameter for Beta distribution used for generating demands")]
         public double BetaDemandDistribution { get; set; }
+
+        [Option("gammashape", Required = false, Default = 1.9, HelpText = "Shape parameter for gamma distribution")]
+        public double GammaShape { get; set; }
+
+        [Option("gammarate", Required = false, Default = 0.1, HelpText = "Rate gamma distribution parameter")]
+        public double GammaRate { get; set; }
+
+        [Option("usebeta", Required = false, Default = false, HelpText = "Use beta distribution")]
+        public bool UseBetaDistribution { get; set; }
     }
 
     class Program
@@ -70,9 +79,10 @@ namespace VrpTestCasesGenerator
         {
             IGraphHopperClient graphHopperClient = new GraphHopperClient();
             INominatimClient nominatimClient = new NominatimClient();
-
+            IDemandGenerator demand = arguments.UseBetaDistribution ? (IDemandGenerator)new BetaDemandGenerator(arguments.AlphaDemandDistribution, arguments.BetaDemandDistribution, arguments.Capacity) :
+                                new GammaDemandGenerator(arguments.GammaShape, arguments.GammaRate, arguments.Capacity);
             IVrpGenerator generator = new VrpGenerator(
-                new DemandGenerator(arguments.AlphaDemandDistribution, arguments.BetaDemandDistribution, arguments.Capacity), 
+                demand, 
                 new ClientCoordsGenerator(nominatimClient, 0.001), 
                 new DistanceMatrixGenerator(graphHopperClient));
 
@@ -112,10 +122,10 @@ namespace VrpTestCasesGenerator
             {
                 ProblemName = "Test",
                 OutputPath = "Benchmarks/Testa.vrp",
-                Clients = 100,
+                Clients = 400,
                 DepotLatitude = 52.231838,
                 DepotLongitude = 21.005995,
-                Capacity = 100,
+                Capacity = 10500,
                 Streets = new List<string>()
                 {
                     "Marszalkowska",
@@ -129,7 +139,10 @@ namespace VrpTestCasesGenerator
                 IncludeCoords = true,
                 AdditionalInfoFilePath = "Benchmarks\\TestAdd.vrp",
                 AlphaDemandDistribution = 0.1,
-                BetaDemandDistribution = 1
+                BetaDemandDistribution = 1,
+                UseBetaDistribution = false,
+                GammaShape = 1.9,
+                GammaRate = 0.1
             };
             Run(args);
         }
