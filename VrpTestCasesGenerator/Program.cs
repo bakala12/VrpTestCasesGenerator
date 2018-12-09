@@ -128,12 +128,31 @@ namespace VrpTestCasesGenerator
                 Capacity = 10500,
                 Streets = new List<string>()
                 {
-                    "Marszalkowska",
-                    "Noakowskiego",
-                    "Polna",
-                    "Koszykowa",
-                    "Aleje Jerozolimskie",
-                    "Puławska"
+                    "Brożka",
+                    "Górczewska",
+                    "Księcia Janusza",
+                    "Łacińska",
+                    "Romańska",
+                    "Traktorzystki",
+                    "Ulrychowska",
+                    "Deotymy",
+                    "Andrychowska",
+                    "Astronomów",
+                    "Kaprys",
+                    "Klecka",
+                    "Lędzka",
+                    "D. Siedzikówny \"Inki\"",
+                    "Newelska",
+                    "Ciołka",
+                    "Czorsztyńska",
+                    "Koszycka",
+                    "Magistracka",
+                    "Ożarowska",
+                    "Raszei",
+                    "Ringelbluma",
+                    "Jana Sitnika",
+                    "Batalionu AK \"Pięść\"",
+                    "Bielskiego"
                 },
                 NumberOfInstances = 1,
                 IncludeCoords = true,
@@ -142,7 +161,7 @@ namespace VrpTestCasesGenerator
                 BetaDemandDistribution = 1,
                 UseBetaDistribution = false,
                 GammaShape = 1.9,
-                GammaRate = 0.1
+                GammaRate = 0.033
             };
             Run(args);
         }
