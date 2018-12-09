@@ -39,7 +39,7 @@ namespace VrpTestCasesGenerator.Writer
 
         private void WriteToFileWithAdditionalInfo(VrpProblem problem, string file)
         {
-            using (var fs = new FileStream(file, FileMode.OpenOrCreate | FileMode.Truncate))
+            using (var fs = new FileStream(file, FileMode.Create))
             {
                 using (var sw = new StreamWriter(fs))
                 {
@@ -70,7 +70,7 @@ namespace VrpTestCasesGenerator.Writer
 
         private void WriteToFile(VrpProblem problem, string file)
         {
-            using (var fs = new FileStream(file, FileMode.OpenOrCreate | FileMode.Truncate))
+            using (var fs = new FileStream(file, FileMode.Create))
             {
                 using (var sw = new StreamWriter(fs))
                 {

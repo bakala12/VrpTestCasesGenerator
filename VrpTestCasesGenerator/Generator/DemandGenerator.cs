@@ -1,4 +1,5 @@
 ﻿using Accord.Statistics.Distributions.Univariate;
+using Accord.Statistics.Models.Fields.Features;
 
 namespace VrpTestCasesGenerator.Generator
 {
@@ -84,6 +85,10 @@ namespace VrpTestCasesGenerator.Generator
             {
                 var r = _gammaDistribution.Generate();
                 demands[i] = (int)(1 + r * (_capacity - 1)); //to have result from 1 to capacity
+                if (demands[i] > _capacity)
+                {
+                    demands[i] = 1+ (demands[i] % (_capacity -1));
+                }
             }
             return demands;
         }
