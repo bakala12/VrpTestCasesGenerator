@@ -55,14 +55,11 @@ namespace VrpTestCasesGenerator
         [Option("gammashape", Required = false, Default = 1.9, HelpText = "Shape parameter for gamma distribution")]
         public double GammaShape { get; set; }
 
-        [Option("gammarate", Required = false, Default = 0.1, HelpText = "Rate gamma distribution parameter")]
+        [Option("gammarate", Required = false, Default = 0.033, HelpText = "Rate gamma distribution parameter")]
         public double GammaRate { get; set; }
 
         [Option("usebeta", Required = false, Default = false, HelpText = "Use beta distribution")]
         public bool UseBetaDistribution { get; set; }
-
-        [Option('m', "maxdemand", Required = false, Default = 0, HelpText = "Max value for demand")]
-        public int MaxDemand { get; set; }
     }
 
     class Program
@@ -80,12 +77,10 @@ namespace VrpTestCasesGenerator
 
         static void Run(Arguments arguments)
         {
-            if (arguments.MaxDemand <= 0 && arguments.MaxDemand > arguments.Capacity)
-                arguments.MaxDemand = arguments.Capacity;
             IGraphHopperClient graphHopperClient = new GraphHopperClient();
             INominatimClient nominatimClient = new NominatimClient();
-            IDemandGenerator demand = arguments.UseBetaDistribution ? (IDemandGenerator)new BetaDemandGenerator(arguments.AlphaDemandDistribution, arguments.BetaDemandDistribution, arguments.MaxDemand) :
-                                new GammaDemandGenerator(arguments.GammaShape, arguments.GammaRate, arguments.MaxDemand);
+            IDemandGenerator demand = arguments.UseBetaDistribution ? (IDemandGenerator)new BetaDemandGenerator(arguments.AlphaDemandDistribution, arguments.BetaDemandDistribution, arguments.Capacity) :
+                                new GammaDemandGenerator(arguments.GammaShape, arguments.GammaRate);
             IVrpGenerator generator = new VrpGenerator(
                 demand, 
                 new ClientCoordsGenerator(nominatimClient, 0.001), 
