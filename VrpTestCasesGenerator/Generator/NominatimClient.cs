@@ -158,13 +158,7 @@ namespace VrpTestCasesGenerator.Generator
             List<List<Location>> list = new List<List<Location>>();
             var builder = new UriBuilder(_webServiceAddress);
 
-            var query = HttpUtility.ParseQueryString(builder.Query);
-            query["format"] = "xml";
-            query["polygon_kml"] = "1";
-            query["city"] = "Warszawa";
-            query["street"] = streetName;
-            query["limit"] = "20";
-            builder.Query = query.ToString();
+            builder.Query = $"format=xml&polygon_kml=1&city=Warszawa&street={streetName}&limit=20";
 
             var response = await GetAsync(builder.Uri);
             if (!response.IsSuccessStatusCode)

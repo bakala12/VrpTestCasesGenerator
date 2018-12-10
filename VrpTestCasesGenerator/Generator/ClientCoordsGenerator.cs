@@ -61,6 +61,8 @@ namespace VrpTestCasesGenerator.Generator
             foreach (var streetName in streetNames)
             {
                 var streetParts = await _nominatimClient.GetStreetParts(streetName);
+                if(streetParts.Count == 0)
+                    Console.WriteLine($"No street parts for street {streetName}");
                 var realStreet = streetParts.Select(s => new Street(streetName, s));
                 streets.AddRange(realStreet);
                 distSum += realStreet.Sum(s => s.Distance);
