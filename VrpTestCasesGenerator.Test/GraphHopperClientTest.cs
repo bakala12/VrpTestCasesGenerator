@@ -24,8 +24,15 @@ namespace VrpTestCasesGenerator.Test
         [TestMethod]
         public void CorrectResultTest()
         {
-            var dist = _client.GetDistance(new Location(52.226469, 20.989519), new Location(52.22752, 20.988843), false).Result;
-            Assert.AreEqual(dist.Item1, 222, 1);
+            double startLat = 52.226469, startLon = 20.989519;
+            double endLat = 52.22752, endLon = 20.988843;
+            double expectedDist = 220.0;
+            double epsilonPrecision = 2.5;
+            
+            var dist = _client.GetDistance(new Location(startLat, startLon), new Location(endLat, endLon), false).Result;
+            var lowerBoundDist = _client.CalculateSimpleDistance(startLat, startLon, endLat, endLon);
+            Assert.IsTrue(dist.Item1 >= lowerBoundDist);
+            Assert.AreEqual(dist.Item1, expectedDist, epsilonPrecision);
         }
 
         [TestMethod]
