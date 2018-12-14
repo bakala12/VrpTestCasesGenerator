@@ -146,7 +146,7 @@ namespace VrpTestCasesGenerator.Writer
                 {
                     var d = (int) Math.Round(matrix[i, j]);
                     var c = matrix.GetCrossingCount(i, j);
-                    if(d > 0) sw.WriteLine($"{i} {j} {d} {c}");
+                    if(d > 0) sw.WriteLine($"{i+1} {j+1} {d} {c}");
                 }
             }
             sw.WriteLine("-1");
